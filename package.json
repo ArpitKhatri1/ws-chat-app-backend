@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tsc && nodemon ./dist/main/index.js"
+    "dev": "npx tsc && nodemon ./dist/main/index.js",
+    "build": "npx tsc && node ./dist/main/index.js"
   },
   "keywords": [],
   "author": "",
@@ -16,3 +17,4 @@
     "ws": "^8.18.0"
   }
 }
+

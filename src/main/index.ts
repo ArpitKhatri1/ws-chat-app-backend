@@ -72,22 +72,22 @@ wss.on("connection", function connection(socket: WebSocket) {
   });
 });
 
-setInterval(() => {
-  console.log("\n===== Current Active Rooms =====");
-  if (allRooms.length === 0) {
-    console.log("No active rooms.");
-  } else {
-    allRooms.forEach((room) => {
-      console.log(`Room ID: ${room.roomId}`);
-      console.log("Members:");
-      if (room.users.length === 0) {
-        console.log("  No users in this room.");
-      } else {
-        room.users.forEach((user, index) => {
-          console.log(`  ${index + 1}. ${user.name}`);
-        });
-      }
-      console.log("-------------------------");
-    });
-  }
-}, 3000);
+// setInterval(() => {
+//   console.log("\n===== Current Active Rooms =====");
+//   if (allRooms.length === 0) {
+//     console.log("No active rooms.");
+//   } else {
+//     allRooms.forEach((room) => {
+//       console.log(`Room ID: ${room.roomId}`);
+//       console.log("Members:");
+//       if (room.users.length === 0) {
+//         console.log("  No users in this room.");
+//       } else {
+//         room.users.forEach((user, index) => {
+//           console.log(`  ${index + 1}. ${user.name}`);
+//         });
+//       }
+//       console.log("-------------------------");
+//     });
+//   }
+// }, 3000);
