@@ -1,93 +1,68 @@
 import { WebSocketServer, WebSocket } from "ws";
-
+import http from "http";
+import dotenv from "dotenv";
 type UserType = {
   name: string;
   socket: WebSocket;
 };
+
 type AllRoomsType = {
   roomId: string;
   users: UserType[];
 };
-
+dotenv.config();
 let allRooms: AllRoomsType[] = [];
 
-const wss = new WebSocketServer({ port: 8080 });
+// Create an HTTP server
+const server = http.createServer();
+const wss = new WebSocketServer({ server });
 
-wss.on("connection", function connection(socket: WebSocket) {
+wss.on("connection", (socket: WebSocket) => {
+  console.log("New client connected");
+
   socket.on("close", () => {
-    console.log("close request");
-    allRooms.map((room, index) => {
+    console.log("Client disconnected");
+    allRooms = allRooms.filter((room) => {
       room.users = room.users.filter((user) => user.socket !== socket);
-      if (room.users.length === 0) {
-        allRooms.splice(index, 1);
-      }
+      return room.users.length > 0;
     });
   });
-  socket.on("message", (message) => {
-    const msgString = message.toString();
 
-    const msgObject = JSON.parse(msgString);
+  socket.on("message", (message) => {
+    const msgObject = JSON.parse(message.toString());
     console.log(msgObject);
 
     if (msgObject.type === "CREATE") {
-      const roomId = msgObject.payload.roomId;
-      allRooms.push({
-        roomId: roomId,
-        users: [],
-      });
+      allRooms.push({ roomId: msgObject.payload.roomId, users: [] });
     }
 
     if (msgObject.type === "JOIN") {
-      const roomId = msgObject.payload.roomId;
-      const username = msgObject.payload.user;
-      const room = allRooms.find((r) => r.roomId === roomId);
-
-      if (room) {
-        if (!room.users.some((user) => user.name === username)) {
-          room.users.push({
-            name: username,
-            socket: socket,
-          });
-        }
+      const room = allRooms.find((r) => r.roomId === msgObject.payload.roomId);
+      if (
+        room &&
+        !room.users.some((user) => user.name === msgObject.payload.user)
+      ) {
+        room.users.push({ name: msgObject.payload.user, socket });
       }
     }
 
     if (msgObject.type === "MESSAGE") {
-      const roomId = msgObject.payload.roomId;
-      const username = msgObject.payload.userName;
-      const msgString = msgObject.payload.msgString;
-      const room = allRooms.find((r) => r.roomId === roomId);
-
-      const messagePayload = {
-        msgString: msgString,
-        userName: username,
-      };
-      console.log(messagePayload);
+      const room = allRooms.find((r) => r.roomId === msgObject.payload.roomId);
       if (room) {
-        room.users.forEach((user) => {
-          user.socket.send(JSON.stringify(messagePayload));
-        });
+        const messagePayload = {
+          msgString: msgObject.payload.msgString,
+          userName: msgObject.payload.userName,
+        };
+        room.users.forEach((user) =>
+          user.socket.send(JSON.stringify(messagePayload))
+        );
       }
     }
   });
 });
 
-// setInterval(() => {
-//   console.log("\n===== Current Active Rooms =====");
-//   if (allRooms.length === 0) {
-//     console.log("No active rooms.");
-//   } else {
-//     allRooms.forEach((room) => {
-//       console.log(`Room ID: ${room.roomId}`);
-//       console.log("Members:");
-//       if (room.users.length === 0) {
-//         console.log("  No users in this room.");
-//       } else {
-//         room.users.forEach((user, index) => {
-//           console.log(`  ${index + 1}. ${user.name}`);
-//         });
-//       }
-//       console.log("-------------------------");
-//     });
-//   }
-// }, 3000);
+// Bind to Render's assigned port
+const PORT = Number(process.env.PORT) || 3000;
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

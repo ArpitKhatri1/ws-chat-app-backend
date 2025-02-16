@@ -11,6 +11,9 @@ importers:
       '@types/ws':
         specifier: ^8.5.14
         version: 8.5.14
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
       typescipt:
         specifier: ^1.0.0
         version: 1.0.0
@@ -31,6 +34,10 @@ packages:
 
   '@types/ws@8.5.14':
     resolution: {integrity: sha512-bd/YFLW+URhBzMXurx7lWByOu+xzU9+kb3RboOteXYDfW+tr+JZa99OyNmPINEGB/ahzKrEuc8rcv4gnpJmxTw==}
+
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
 
   typescipt@1.0.0:
     resolution: {integrity: sha512-Rgg7DtWh0c0oJPz2p48B0hlINIkE5zxU5i+dGctkoiKjIu6twl0HXWzoy+mvp9bQfLJGx70zYuN6GK0S/x5Kxw==}
@@ -67,6 +74,8 @@ snapshots:
   '@types/ws@8.5.14':
     dependencies:
       '@types/node': 22.13.2
+
+  dotenv@16.4.7: {}
 
   typescipt@1.0.0: {}
 
